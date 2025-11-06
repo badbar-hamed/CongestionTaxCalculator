@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CongestionTaxCalculator.Domain.CongestionTaxRules
 {
-    // ✅ Entity: unique per (Vehicle + Timestamp)
+    
     public class TollStationPass:Entity
     {
         public Vehicle Vehicle { get; }

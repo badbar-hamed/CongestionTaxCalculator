@@ -7,16 +7,24 @@ using System.Threading.Tasks;
 
 namespace CongestionTaxCalculator.Domain.CongestionTaxRules
 {
-    // ✅ Entity: has identity (e.g., LicensePlate)
-    public class Vehicle:Entity
+
+    public class Vehicle : Entity
     {
         public string LicensePlate { get; }
-        public string Type { get; }
+        public VehicleType Type { get; }
 
         public Vehicle(string licensePlate, string type)
         {
             LicensePlate = licensePlate;
-            Type = type;
+            if (Enum.TryParse(type, out VehicleType parsedVehicleType))
+            {
+                Type = parsedVehicleType;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid vehicle type", nameof(type));
+            }
+
         }
     }
 }

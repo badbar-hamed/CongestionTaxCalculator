@@ -7,21 +7,21 @@ using System.Threading.Tasks;
 
 namespace CongestionTaxCalculator.Domain.CongestionTaxRules
 {
-    // ✅ Value Object: equality based on value, not identity
+    
     public class TaxPeriod : ValueObject
     {
-        public TimeSpan Start { get; }
-        public TimeSpan End { get; }
+        public TimeOnly Start { get; }
+        public TimeOnly End { get; }
         public decimal Fee { get; }
 
-        public TaxPeriod(TimeSpan start, TimeSpan end, decimal fee)
+        public TaxPeriod(TimeOnly start, TimeOnly end, decimal fee)
         {
             Start = start;
             End = end;
             Fee = fee;
         }
 
-        public bool Includes(TimeSpan time)
+        public bool Includes(TimeOnly time)
             => time >= Start && time <= End;
 
         public bool Equals(TaxPeriod? other)
