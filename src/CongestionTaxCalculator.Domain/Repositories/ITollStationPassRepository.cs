@@ -1,4 +1,4 @@
-﻿using CongestionTaxCalculator.Domain.CongestionTaxRules;
+﻿using CongestionTaxCalculator.Domain.Vehicles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +9,9 @@ namespace CongestionTaxCalculator.Domain.Repositories
 {
     public interface ITollStationPassRepository
     {
-        Task<IEnumerable<TollStationPass>> GetVehicleAllPassOnDay(Guid vehicleId,DateOnly date);
+        Task<IEnumerable<VehiclePass>> GetVehicleAllPassOnDay(int vehicleId,DateOnly date);
 
 
-        Task AddRange(IEnumerable<TollStationPass> tollStationPasses);
+        Task AddRange(IEnumerable<VehiclePass> tollStationPasses);
     }
 }

@@ -13,7 +13,8 @@ namespace CongestionTaxCalculator.Domain.CongestionTaxRules
         public TimeOnly Start { get; }
         public TimeOnly End { get; }
         public decimal Fee { get; }
-
+        private TaxPeriod() { }
+        
         public TaxPeriod(TimeOnly start, TimeOnly end, decimal fee)
         {
             Start = start;

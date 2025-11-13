@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CongestionTaxCalculator.Domain.DateTaxRules
 {
-    public class DateTaxRule : AggregateRoot
+    public class DateTaxRule : AggregateRoot<int>
     {
         public IReadOnlySet<DateOnly> Holidays { get; }
 
