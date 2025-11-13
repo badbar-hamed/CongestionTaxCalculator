@@ -1,4 +1,4 @@
-﻿using CongestionTaxCalculator.Domain.CongestionTaxRules;
+﻿using CongestionTaxCalculator.Domain.Vehicles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,4 +16,5 @@ namespace CongestionTaxCalculator.Domain.Repositories
 
         Task<Vehicle> GetByLicensePlateAsync(string licensePlate);
     }
+
 }

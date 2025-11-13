@@ -1,4 +1,6 @@
-﻿using CongestionTaxCalculator.Domain.Core;
+﻿using CongestionTaxCalculator.Domain.Common;
+using CongestionTaxCalculator.Domain.Core;
+using CongestionTaxCalculator.Domain.Vehicles;
 using System.Data;
 
 
@@ -7,13 +9,15 @@ namespace CongestionTaxCalculator.Domain.CongestionTaxRules;
 
 
 
-public class CongestionTaxRule : AggregateRoot
+public class CongestionTaxRule : AggregateRoot<int>
 {
     public decimal DailyCap { get; }
     public int SingleChargePeriodMinutes { get;  }
     public IReadOnlyCollection<TaxPeriod> TaxPeriods { get; }
-    public IReadOnlyCollection<VehicleType> TollExemptVehicles { get; }    
+    public IReadOnlyCollection<VehicleType> TollExemptVehicles { get; }
 
+    private CongestionTaxRule() { }
+    
     public CongestionTaxRule(
         decimal dailyCap,
         int singleChargePeriodMinutes,
@@ -30,7 +34,7 @@ public class CongestionTaxRule : AggregateRoot
     /// Calculates the total congestion tax for a given vehicle and its daily passes.
     /// Applies toll exemptions, free dates, and the 60-minute single-charge rule.
     /// </summary>
-    public decimal CalculateTax(Vehicle vehicle, IEnumerable<TollStationPass> passesForDay)
+    public decimal CalculateTax(Vehicle vehicle, IEnumerable<VehiclePass> passesForDay)
     {
         if (!passesForDay.Any()) return 0m;
 
@@ -55,17 +59,17 @@ public class CongestionTaxRule : AggregateRoot
     /// <summary>
     /// Applies the 60-minute single-charge rule and daily cap.
     /// </summary>
-    private decimal CalculateDailyTax(IEnumerable<TollStationPass> passes)
+    private decimal CalculateDailyTax(IEnumerable<VehiclePass> passes)
     {
-        var ordered = passes.OrderBy(p => p.Timestamp).ToList();
+        var ordered = passes.OrderBy(p => p.PassMoment).ToList();
         decimal total = 0;
         decimal maxFee = 0;
-        DateTime windowStart = ordered.First().Timestamp;
+        DateTime windowStart = ordered.First().PassMoment;
 
         foreach (var pass in ordered)
         {
-            var currentFee = GetTollFee(TimeOnly.FromDateTime(pass.Timestamp));
-            var minutesSinceWindowStart = (pass.Timestamp - windowStart).TotalMinutes;
+            var currentFee = GetTollFee(TimeOnly.FromDateTime(pass.PassMoment));
+            var minutesSinceWindowStart = (pass.PassMoment - windowStart).TotalMinutes;
 
             if (minutesSinceWindowStart <= SingleChargePeriodMinutes)
             {
@@ -74,7 +78,7 @@ public class CongestionTaxRule : AggregateRoot
             else
             {
                 total += maxFee;
-                windowStart = pass.Timestamp;
+                windowStart = pass.PassMoment;
                 maxFee = currentFee;
             }
         }
@@ -94,9 +98,9 @@ public class CongestionTaxRule : AggregateRoot
 
     
 
-    private bool AreAllPassesFromSameDay(IEnumerable<TollStationPass> passes)
+    private bool AreAllPassesFromSameDay(IEnumerable<VehiclePass> passes)
     {
-        var firstDate = DateOnly.FromDateTime(passes.First().Timestamp);
-        return passes.All(p => DateOnly.FromDateTime(p.Timestamp) == firstDate);
+        var firstDate = DateOnly.FromDateTime(passes.First().PassMoment);
+        return passes.All(p => DateOnly.FromDateTime(p.PassMoment) == firstDate);
     }
 }

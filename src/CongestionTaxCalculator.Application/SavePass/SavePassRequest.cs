@@ -10,6 +10,6 @@ namespace CongestionTaxCalculator.Application.SavePass
     {
         public string VehiclePlate { get; set; }
 
-        public IEnumerable<DateTime> VehiclePassDates { get; set; }
+        public DateTime VehiclePassDate { get; set; }
     }
 }
